@@ -1,7 +1,7 @@
 # Mindful-Tiktok
 
- 
-
+To learn how to craft a query, use the tiktok documentation 
+https://developers.tiktok.com/doc/research-api-specs-query-videos/
 
 
 # License
