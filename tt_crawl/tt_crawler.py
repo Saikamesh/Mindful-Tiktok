@@ -81,7 +81,7 @@ class TikTokCrawler:
         """
         Makes a csv file from given data.
         """
-        file_path = os.path.join(os.path.dirname(__file__), '..', file_name)
+        file_path = os.path.join(os.getcwd(), file_name)
         video_data = data['data']['videos']
         all_keys = set().union(*(d.keys() for d in video_data))
 
