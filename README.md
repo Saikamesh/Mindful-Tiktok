@@ -1,5 +1,15 @@
 # Mindful-Tiktok
 
+The project is currently in alpha stage and is available on TestPyPi
+
+Here is the link to the respositoy on TestPyPi -  [tt-crawl](https://test.pypi.org/project/tt-crawl/)
+
+- Use the below command to install 
+
+``` 
+pip install -i https://test.pypi.org/simple/ tt-crawl
+```
+
 To learn how to craft a query, use the tiktok documentation 
 https://developers.tiktok.com/doc/research-api-specs-query-videos/
 

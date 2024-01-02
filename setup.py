@@ -14,7 +14,7 @@ setup(
     description='A TikTok crawler',
     long_description=open('README.md').read() + '\n\n' + open('CHANGELOG.txt').read(),
     long_description_content_type="text/markdown",
-    url='',
+    url='https://github.com/Saikamesh/Mindful-Tiktok',
     author='Sai Dwibhashyam',
     License='GPL-3.0 License',
     classifiers=classifiers,
