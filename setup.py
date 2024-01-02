@@ -10,7 +10,7 @@ classifiers = [
 
 setup(
     name='tt_crawl',
-    version='0.0.2',
+    version='0.0.21',
     description='A TikTok crawler',
     long_description=open('README.md').read() + '\n\n' + open('CHANGELOG.txt').read(),
     long_description_content_type="text/markdown",

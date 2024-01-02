@@ -7,8 +7,8 @@
 [Version 0.0.2] - 2023-12-27
 - Fixed bug when using import
 
-[Version 0.0.21] - YYYY-MM-DD
-- TBD
-- TBD
+[Version 0.0.21] - 2024-01-01
+- Fixed csv file generation bug
+- updating readme & setup file
 
 
