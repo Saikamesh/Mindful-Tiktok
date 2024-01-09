@@ -11,4 +11,6 @@
 - Fixed csv file generation bug
 - updating readme & setup file
 
-
+[Version 0.0.22] - 2024-01-08
+- Removed the ability to choose specific fields while querying, now it returns all available fields.
+- Changes to function definition & structure as per new requirements.

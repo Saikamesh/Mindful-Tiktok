@@ -3,6 +3,7 @@ import json
 import csv
 import os
 import pandas as pd
+from . import utils as ut
 
 class TikTokCrawler:
     
@@ -14,6 +15,7 @@ class TikTokCrawler:
     _grant_type: str=''
     _auth_token: str=''
 
+    FIELDS = 'id,video_description,create_time, region_code,share_count,view_count,like_count,comment_count, music_id,hashtag_names, username,effect_ids,playlist_id,voice_to_text'
 
     OAUTH_HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded"
@@ -51,9 +53,9 @@ class TikTokCrawler:
         else:
             auth_token = response.json()['access_token']
             return auth_token 
-   
+    
 
-    def query_videos(self, fields: str, query: dict) -> dict:
+    def query_videos(self, query: dict, start_date:str, start_month:str, start_year:str, end_date:str, end_month:str, end_year:str) -> dict:
         """
         Returns a list of videos based on the search criteria.
         """
@@ -62,10 +64,10 @@ class TikTokCrawler:
             "Authorization": "Bearer " + self._auth_token ,
             "Content-Type": "application/json"
         }
-    
-        query_json = json.dumps(query)
+        req = ut.generate_request_query(query, start_date, start_month, start_year, end_date, end_month, end_year)
+        req_json = json.dumps(req)
         
-        response = requests.post(self.API_URL + "?fields=" + fields, headers=QUERY_HEADERS, data=query_json)
+        response = requests.post(self.API_URL + "?fields=" + self.FIELDS, headers=QUERY_HEADERS, data=req_json)
         if response.status_code != 200:
             err = {
                 'error':response.json()["error"]['code'],
