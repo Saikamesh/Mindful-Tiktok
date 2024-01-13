@@ -2,7 +2,6 @@ import requests
 import json
 import csv
 import os
-import pandas as pd
 from . import utils as ut
 
 class TikTokCrawler:
@@ -15,7 +14,7 @@ class TikTokCrawler:
     _grant_type: str=''
     _auth_token: str=''
 
-    FIELDS = 'id,video_description,create_time, region_code,share_count,view_count,like_count,comment_count, music_id,hashtag_names, username,effect_ids,playlist_id,voice_to_text'
+    FIELDS = 'id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text'
 
     OAUTH_HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded"
@@ -55,7 +54,7 @@ class TikTokCrawler:
             return auth_token 
     
 
-    def query_videos(self, query: dict, start_date:str, start_month:str, start_year:str, end_date:str, end_month:str, end_year:str) -> dict:
+    def query_videos(self, query: dict, start_date:int, start_month:int, start_year:int, end_date:int, end_month:int, end_year:int) -> dict:
         """
         Returns a list of videos based on the search criteria.
         """
@@ -85,26 +84,18 @@ class TikTokCrawler:
         """
         file_path = os.path.join(os.getcwd(), file_name)
         video_data = data['data']['videos']
-        all_keys = set().union(*(d.keys() for d in video_data))
 
         if video_data:            
-            if os.path.exists(file_path):
-                df = pd.read_csv(file_path)
-                new_data = pd.DataFrame(video_data)
-                df = df.reindex(columns=df.columns.union(new_data.columns))
-                new_data = new_data.reindex(columns=df.columns)
-                df = df._append(new_data, ignore_index=True)
-            else:
-                df = pd.DataFrame(video_data)
+            for d in video_data:
+                for field in self.FIELDS.split(','):
+                    if field not in d:
+                        d[field] = None
 
-            df.to_csv(file_path, index=False)
+            with open(file_path, 'a', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=self.FIELDS.split(','))
+                if f.tell() == 0:
+                    writer.writeheader()
+                writer.writerows(video_data)
         else:
             print("No data to write to csv file")
             print(data)
-   
-
-        
-            
-
-
-    

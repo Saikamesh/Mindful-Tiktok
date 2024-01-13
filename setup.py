@@ -20,6 +20,6 @@ setup(
     classifiers=classifiers,
     keywords='TikTok, TikTok Research API, TikTok Data',
     packages=find_packages(),
-    install_requires=['requests', 'pandas'],
+    install_requires=['requests'],
     python_requires='>=3.10'
 )
