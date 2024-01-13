@@ -91,7 +91,7 @@ class TikTokCrawler:
                     if field not in d:
                         d[field] = None
 
-            with open(file_path, 'a', newline='') as f:
+            with open(file_path, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=self.FIELDS.split(','))
                 if f.tell() == 0:
                     writer.writeheader()
