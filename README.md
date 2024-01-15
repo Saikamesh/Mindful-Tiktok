@@ -1,5 +1,6 @@
 # Mindful-Tiktok
 
+
 The project is currently in alpha stage and is available on TestPyPi
 
 Here is the link to the respositoy on TestPyPi -  [tt-crawl](https://test.pypi.org/project/tt-crawl/)
@@ -10,8 +11,59 @@ Here is the link to the respositoy on TestPyPi -  [tt-crawl](https://test.pypi.o
 pip install -i https://test.pypi.org/simple/ tt-crawl
 ```
 
-To learn how to craft a query, use the tiktok documentation 
-https://developers.tiktok.com/doc/research-api-specs-query-videos/
+# Requirements
+ 
+ You need access to [TikTok Research API](https://developers.tiktok.com/products/research-api/) to use this package. 
+
+
+# Instructions
+
+To learn how to construct your own query, use the [tiktok documentation](https://developers.tiktok.com/doc/research-api-specs-query-videos/)
+
+
+Perform a query
+
+
+```
+from tt_crawl import TikTokCrawler
+
+test_crawler = TikTokCrawler(client_key, client_secret, grant_type)
+
+request_body = {
+    "query": {
+        "and": [
+            {"operation": "IN", "field_name": "region_code", "field_values": ["JP", "US"]},
+            {"operation": "EQ", "field_name": "hashtag_name", "field_values": ["Valorant"]},
+        ],
+        "or": [
+            {"operation": "EQ", "field_name": "video_length", "field_values": ["MID"]},
+            {"operation": "EQ", "field_name": "video_length", "field_values": ["LONG"]},
+        ],
+        "not": [
+            {"operation": "EQ", "field_name": "video_length", "field_values": ["SHORT"]}
+        ],
+    }
+}
+
+result = test_crawler.query_videos(request_body, 1, 11, 2021, 1, 1, 2022)
+
+```
+
+To save the result in a csv file
+
+```
+test_crawler.make_csv(result)
+```
+
+To merge all the csv files
+
+```
+test_crawler.merge_all_data()
+```
+
+# Issues
+
+If you encounter any problems, please [file an issue](https://github.com/Saikamesh/Mindful-Tiktok/issues) along with a detailed description.
 
 
 # License

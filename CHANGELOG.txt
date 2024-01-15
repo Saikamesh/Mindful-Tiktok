@@ -14,3 +14,9 @@
 [Version 0.0.22] - 2024-01-08
 - Removed the ability to choose specific fields while querying, now it returns all available fields.
 - Changes to function definition & structure as per new requirements.
+
+[Version 0.0.23] - 2024-01-05
+- Added support for querying data more than 30 days, No longer limited to 30 day range.
+- Added support to Save the query data in csv files, file name & file path are now optional.
+- Added support for merging all the data files into one file.
+- Many changes to how functions operate behind the scenes.
