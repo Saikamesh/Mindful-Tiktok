@@ -61,6 +61,45 @@ To merge all the csv files
 test_crawler.merge_all_data()
 ```
 
+# Privacy Policy
+
+This privacy policy governs the use of the Mindful-Tiktok application.
+
+## Information Collection and Use
+
+This is a Python package developed for research and educational purposes only. It is designed to interact with the TikTok Research API. As such, it does not collect or store any kind of information related to the user.
+
+## Data Security
+
+We do not collect any personal information from users of the Mindful-Tiktok application. 
+
+## Changes to This Privacy Policy
+
+We may update our privacy policy from time to time. We will try our best to notify users of any changes to this privacy policy. However, users are responsible for regularly checking the GitHub project page to ensure they are aware of any updates.
+
+
+
+
+# Terms of Service
+
+By using the Mindful-Tiktok application, you agree to the following terms and conditions:
+
+## Intellectual Property
+
+All intellectual property rights of the Mindful-Tiktok application belong to the developers.
+
+## Limitation of Liability
+
+The developers of the Mindful-Tiktok application shall not be held liable for any damages or losses arising from the use or inability to use the application.
+
+## Governing Law
+
+These terms and conditions shall be governed by and construed in accordance with the laws of the jurisdiction in which the Mindful-Tiktok application is used.
+
+
+
+
+
 # Issues
 
 If you encounter any problems, please [file an issue](https://github.com/Saikamesh/Mindful-Tiktok/issues) along with a detailed description.

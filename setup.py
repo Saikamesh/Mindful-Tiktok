@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 classifiers = [
-    "Development Status :: 3 - Pre-Alpha",
+    "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -20,6 +20,6 @@ setup(
     classifiers=classifiers,
     keywords="TikTok, TikTok Research API, TikTok Data",
     packages=find_packages(),
-    install_requires=["requests"],
+    install_requires=["requests=2.31.0", ],
     python_requires=">=3.10",
 )
