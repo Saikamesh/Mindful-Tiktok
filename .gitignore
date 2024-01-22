@@ -3,3 +3,4 @@ build
 Data
 tt_crawl.egg-info
 __pycache__
+.vscode
