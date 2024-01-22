@@ -1,4 +1,4 @@
-# Mindful-Tiktok
+# tt_crawl
 
 
 The project is currently in alpha stage and is available on TestPyPi
