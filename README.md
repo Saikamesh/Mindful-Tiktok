@@ -61,6 +61,20 @@ To merge all the csv files
 test_crawler.merge_all_data()
 ```
 
+#### Note: 
+
+
+When you open the CSV files with Microsoft Excel, you may encounter a pop-up message as shown below. While I have taken precautions to minimize data loss caused by Excel conversions, fields with large numeric values may still be misrepresented.
+
+To prevent any potential data loss, please select "Don't Convert" when prompted.
+
+
+![Excel Pop-Up when opening csv file](./images/Excel_error.png)
+
+
+If you can't see the pop-up message and your files have data loss in them. Please file an issue along with a detailed description.
+
+
 # Privacy Policy
 
 This privacy policy governs the use of the Mindful-Tiktok application.
