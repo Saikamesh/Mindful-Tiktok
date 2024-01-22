@@ -45,6 +45,11 @@ class TikTokCrawler:
     def _generate_auth_token(self, client_key, client_secret, grant_type) -> str:
         """
         Generate the auth token to interact with TikTok API.
+
+        Args:
+            client_key (str): The client key for the TikTok API.
+            client_secret (str): The client secret for the TikTok API.
+            grant_type (str): The grant type for the TikTok API.
         """
         response = requests.post(
             self.OAUTH_URL,
@@ -66,6 +71,44 @@ class TikTokCrawler:
             auth_token = response.json()["access_token"]
             return auth_token
 
+    def _process_request(
+        self, request: dict, search_key: str, queried_date: str
+    ) -> dict:
+        """
+        Makes a request to the TikTok API and returns the response.
+
+        Args:
+            request (dict): The request body.
+            search_key (str): The search key.
+            queried_date (str): The date on which the query was made.
+        """
+        QUERY_HEADERS = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + self._auth_token,
+        }
+
+        req_json = json.dumps(request)
+        response = requests.post(
+            self.API_URL + "?fields=" + self.FIELDS,
+            headers=QUERY_HEADERS,
+            data=req_json,
+        )
+        if response.status_code != 200:
+            err = {
+                "error": response.json()["error"]["code"],
+                "description": response.json()["error"]["message"],
+                # 'log_id':response.json()['error']['log_id']
+            }
+            print(err)
+            print(response.status_code)
+            return err
+        else:
+            response_json = response.json()
+            response_json["search_key"] = search_key
+            response_json["queried_date"] = queried_date
+            return response_json
+        pass
+
     def query_videos(
         self,
         query: dict,
@@ -78,81 +121,61 @@ class TikTokCrawler:
     ) -> dict:
         """
         Returns a list of videos based on the search criteria.
+
+        Args:
+            query (dict): The search query.
+            start_day (int): The start day of the search.
+            start_month (int): The start month of the search.
+            start_year (int): The start year of the search.
+            end_day (int): The end day of the search.
+            end_month (int): The end month of the search.
+            end_year (int): The end year of the search.
         """
         search_key = ut.generate_search_key(query)
+        queried_date = datetime.datetime.now().strftime("%Y%m%d")
         start_date = ut.generate_date_string(start_day, start_month, start_year)
         end_date = ut.generate_date_string(end_day, end_month, end_year)
-
-        QUERY_HEADERS = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + self._auth_token,
-        }
-
         date_range = ut.check_date_range(start_date, end_date)
+
         if not date_range:
-            # print("In If - Date range should be less than or equal to 30 days")
             requests_list = ut.generate_request_queries(query, start_date, end_date)
             response_list = []
-            # print(requests_list)
+
             for request in requests_list:
-                req_json = json.dumps(request)
-                response = requests.post(
-                    self.API_URL + "?fields=" + self.FIELDS,
-                    headers=QUERY_HEADERS,
-                    data=req_json,
-                )
-                if response.status_code != 200:
-                    err = {
-                        "error": response.json()["error"]["code"],
-                        "description": response.json()["error"]["message"],
-                        # 'log_id':response.json()['error']['log_id']
-                    }
-                    print(err)
-                    return err
-                else:
-                    response_json = response.json()
-                    response_json["search_key"] = search_key
-                    response_list.append(response_json)
+                response_json = self._process_request(request, search_key, queried_date)
+                response_list.append(response_json)
             return response_list
         else:
             req = ut.generate_request_query(query, start_date, end_date)
-            req_json = json.dumps(req)
-
-            response = requests.post(
-                self.API_URL + "?fields=" + self.FIELDS,
-                headers=QUERY_HEADERS,
-                data=req_json,
-            )
-            if response.status_code != 200:
-                err = {
-                    "error": response.json()["error"]["code"],
-                    "description": response.json()["error"]["message"],
-                    # 'log_id':response.json()['error']['log_id']
-                }
-                print(err)
-                return err
-            else:
-                response_json = response.json()
-                response_json["search_key"] = search_key
-                return response_json
+            response_json = self._process_request(req, search_key, queried_date)
+            return response_json
 
     def make_csv(
         self, data: Union[dict, list], file_name: str = None, data_dir: str = None
     ) -> None:
         """
         Makes a csv file from given data.
+
+        Args:
+            data (Union[dict, list]): The data to be converted to csv.
+            file_name (str, optional): The name of the csv file. Defaults to a search key based on query.
+            data_dir (str, optional): The directory in which the csv file is to be stored. Defaults to current working dir.
         """
+        fields = self.FIELDS.split(",") + ["search_key", "queried_date"]
+
         if not data_dir:
             data_dir = os.path.join(os.getcwd(), "Data")
             os.makedirs(data_dir, exist_ok=True)
-        
+
         if not isinstance(data, list):
             search_key = data["search_key"]
+            queried_date = data["queried_date"]
         else:
             search_key = data[0].get("search_key")
+            queried_date = data[0].get("queried_date")
 
         if not file_name:
-            search_key = re.sub(r'[^a-zA-Z\s]', '', search_key)
+            search_key = re.sub(r"[^a-zA-Z\s]", "", search_key)
             file_name = (
                 f"{search_key}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             )
@@ -161,42 +184,9 @@ class TikTokCrawler:
 
         if isinstance(data, list):
             for item in data:
-                video_data = item["data"]["videos"]
-
-                if video_data:
-                    for data in video_data:
-                        for field in self.FIELDS.split(","):
-                            if field not in data:
-                                data[field] = None
-
-                    with open(file_path, "a", newline="", encoding="utf-8") as f:
-                        writer = csv.DictWriter(f, fieldnames=self.FIELDS.split(","))
-                        if f.tell() == 0:
-                            f.write(f"search_key: {search_key}\n")
-                            writer.writeheader()
-                        writer.writerows(video_data)
-                else:
-                    print("No data to write to csv file")
-                    print(data)
+                ut.process_data(item, fields, search_key, queried_date, file_path)
         else:
-            
-            video_data = data["data"]["videos"]
-
-            if video_data:
-                for data in video_data:
-                    for field in self.FIELDS.split(","):
-                        if field not in data:
-                            data[field] = None
-
-                with open(file_path, "a", newline="", encoding="utf-8") as f:
-                    writer = csv.DictWriter(f, fieldnames=self.FIELDS.split(","))
-                    if f.tell() == 0:
-                        f.write(f"search_key: {search_key}\n")
-                        writer.writeheader()
-                    writer.writerows(video_data)
-            else:
-                print("No data to write to csv file")
-                print(data)
+            ut.process_data(data, fields, search_key, queried_date, file_path)
 
     def merge_all_data(self, data_dir: str = None, file_name: str = None) -> None:
         """
@@ -204,8 +194,10 @@ class TikTokCrawler:
         """
         if not data_dir:
             data_dir = os.path.join(os.getcwd(), "Data")
-        if not file_name: 
-            file_name = f"merged_data_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        if not file_name:
+            file_name = (
+                f"merged_data_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            )
 
         all_files = glob.glob(os.path.join(data_dir, "*.csv"))
 
@@ -217,10 +209,8 @@ class TikTokCrawler:
             for filename in all_files:
                 with open(filename, "r", newline="", encoding="utf-8") as fin:
                     reader = csv.reader(fin)
-                    custom_line = next(reader)
-                    writer.writerow(custom_line)
                     header = next(reader)
-                    if not header_saved:    
+                    if not header_saved:
                         writer.writerow(header)
                         header_saved = True
                     for row in reader:

@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
+    "Intended Audience :: Education",
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
@@ -10,7 +11,7 @@ classifiers = [
 
 setup(
     name="tt_crawl",
-    version="0.0.23",
+    version="0.0.24",
     description="A TikTok crawler",
     long_description=open("README.md").read() + "\n\n" + open("CHANGELOG.txt").read(),
     long_description_content_type="text/markdown",
