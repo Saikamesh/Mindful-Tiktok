@@ -5,6 +5,7 @@ How to structure a request body?
 Below is the example of a request body.
 
 ```json
+
 request_body = {
     "query": {
         "and": [
@@ -20,6 +21,7 @@ request_body = {
         ],
     }
 }
+
 ```
 
 The request body is a query object which is used to get the information from the api.
@@ -90,6 +92,7 @@ Below is an example on how to write query object based on the requirements
 Let’s say, you want to get data about videos which contain the hashtag #nfl from region US, And you do not want any videos which are less than 15s. Below is how you write the query for it
 
 ```json
+
 request_body = {
      "query": {
          "and": [
@@ -102,6 +105,7 @@ request_body = {
          ],
      }
 }
+
 ```
 
 We have left the `or` condition empty as there is no need for it.
@@ -109,6 +113,7 @@ We have left the `or` condition empty as there is no need for it.
 consider for a moment that we need to get the data from either US or Japan, below is how we’d structure our query object,
 
 ```json
+
 request_body = {
      "query": {
          "and": [
@@ -123,4 +128,5 @@ request_body = {
          ],
      }
 }
+
 ```
