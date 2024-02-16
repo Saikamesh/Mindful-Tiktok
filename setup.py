@@ -11,7 +11,7 @@ classifiers = [
 
 setup(
     name="tt_crawl",
-    version="0.0.24",
+    version="0.0.27",
     description="A TikTok crawler",
     long_description=open("README.md").read() + "\n\n" + open("CHANGELOG.txt").read(),
     long_description_content_type="text/markdown",
@@ -21,6 +21,6 @@ setup(
     classifiers=classifiers,
     keywords="TikTok, TikTok Research API, TikTok Data",
     packages=find_packages(),
-    install_requires=["requests==2.31.0", ],
     python_requires=">=3.10",
+    install_requires=["requests==2.31.0", ],
 )

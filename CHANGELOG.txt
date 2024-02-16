@@ -25,3 +25,13 @@
 - Fix: Video Id & Music Id will no longer be effected by excel file conversion.
 - Added: CSV file will now contain a column with the search_key & date on which the query was made.
 - Code refractoring & structural changes.
+
+[Version 0.0.25] - 2024-01-27
+- Change: create_time now shows standard time format instead of unix timestamp.
+
+[Version 0.0.26] - 2024-02-02
+- Added: Tiktok posts containing images are no longer returned.
+- Change: Individual csv files are now saved in a subfolder inside Data/root. Merged file will stay in Data/root Folder. 
+
+[Version 0.0.27] - 2024-02-12
+- Added: Documentation for structuring query object

@@ -7,7 +7,7 @@ import datetime
 import re
 from typing import Union
 from . import utils as ut
-
+from . import validation as vl
 
 class TikTokCrawler:
     OAUTH_URL = "https://open.tiktokapis.com/v2/oauth/token/"
@@ -104,10 +104,10 @@ class TikTokCrawler:
             return err
         else:
             response_json = response.json()
-            response_json["search_key"] = search_key
-            response_json["queried_date"] = queried_date
-            return response_json
-        pass
+            res_json = vl.validate_urls(response_json)
+            res_json["search_key"] = search_key
+            res_json["queried_date"] = queried_date
+            return res_json
 
     def query_videos(
         self,
@@ -164,7 +164,7 @@ class TikTokCrawler:
         fields = self.FIELDS.split(",") + ["search_key", "queried_date"]
 
         if not data_dir:
-            data_dir = os.path.join(os.getcwd(), "Data")
+            data_dir = os.path.join(os.getcwd(), "Data", "video_data")
             os.makedirs(data_dir, exist_ok=True)
 
         if not isinstance(data, list):
@@ -193,16 +193,18 @@ class TikTokCrawler:
         Merges all the csv files in the Data folder.
         """
         if not data_dir:
-            data_dir = os.path.join(os.getcwd(), "Data")
+            data_dir = os.path.join(os.getcwd(), "Data", "video_data")
         if not file_name:
-            file_name = (
-                f"merged_data_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            )
+            file_name = "video_list.csv"
+            # file_name = (
+            #     f"merged_data_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            # )
 
         all_files = glob.glob(os.path.join(data_dir, "*.csv"))
+        file_path = os.path.join(os.getcwd(), "Data", file_name)
 
         with open(
-            os.path.join(data_dir, file_name), "w", newline="", encoding="utf-8"
+            os.path.join(file_path), "a", newline="", encoding="utf-8"
         ) as fout:
             writer = csv.writer(fout)
             header_saved = False

@@ -18,10 +18,10 @@ pip install -i https://test.pypi.org/simple/ tt-crawl
 
 # Instructions
 
-To learn how to construct your own query, use the [tiktok documentation](https://developers.tiktok.com/doc/research-api-specs-query-videos/)
+To learn how to construct your own query, see [here](./howToQuery.md) or refer to the [tiktok documentation](https://developers.tiktok.com/doc/research-api-specs-query-videos/)
 
 
-Perform a query
+Performing a query
 
 
 ```
