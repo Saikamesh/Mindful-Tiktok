@@ -7,7 +7,8 @@ import datetime
 import re
 from typing import Union
 from . import utils as ut
-from . import validation as vl
+from . import helper as hl
+
 
 class TikTokCrawler:
     OAUTH_URL = "https://open.tiktokapis.com/v2/oauth/token/"
@@ -104,7 +105,7 @@ class TikTokCrawler:
             return err
         else:
             response_json = response.json()
-            res_json = vl.validate_urls(response_json)
+            res_json = hl.validate_urls(response_json)
             res_json["search_key"] = search_key
             res_json["queried_date"] = queried_date
             return res_json
@@ -146,7 +147,7 @@ class TikTokCrawler:
                 response_list.append(response_json)
             return response_list
         else:
-            req = ut.generate_request_query(query, start_date, end_date)
+            req = ut.generate_request_query(query, start_date, end_date) 
             response_json = self._process_request(req, search_key, queried_date)
             return response_json
 
@@ -157,9 +158,9 @@ class TikTokCrawler:
         Makes a csv file from given data.
 
         Args:
-            data (Union[dict, list]): The data to be converted to csv.
-            file_name (str, optional): The name of the csv file. Defaults to a search key based on query.
-            data_dir (str, optional): The directory in which the csv file is to be stored. Defaults to current working dir.
+            data (Union[dict, list]): The data to be converted to csv. This is usually the response from the query_video method.
+            file_name (str, optional): The name of the csv file. Defaults to a search key with date-time based on query.
+            data_dir (str, optional): The directory in which the csv file is to be stored. Defaults to /Data/video_data in current working dir.
         """
         fields = self.FIELDS.split(",") + ["search_key", "queried_date"]
 
@@ -190,22 +191,35 @@ class TikTokCrawler:
 
     def merge_all_data(self, data_dir: str = None, file_name: str = None) -> None:
         """
-        Merges all the csv files in the Data folder.
+        Merges multiple csv files into one file.
+
+        Args:
+            data_dir (str, optional): The path to the directory from which the csv files are to be read.
+            Defaults to folder '/Data/video_data' in current working dir.
+
+            The merged file is stored in the same directory as the data_dir. Defaults to /Data in current working dir.
+
+            file_name (str, optional): The name of the merged csv file. Defaults to 'video_list.csv'.
+
+            Note: If the file_name already exists, the data is appended to the existing file.
+            It is recommended to use a new file name everytime you want to create a new mergefile.
         """
-        if not data_dir:
-            data_dir = os.path.join(os.getcwd(), "Data", "video_data")
+        # file_name = (f"video_list_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv" )
+
         if not file_name:
             file_name = "video_list.csv"
-            # file_name = (
-            #     f"merged_data_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            # )
+
+        if not data_dir:
+            data_dir = os.path.join(os.getcwd(), "Data", "video_data")
+            file_path = os.path.join(os.getcwd(), "Data", file_name)
+        else:
+            file_path = os.path.join(data_dir, file_name)
+            file_path = file_path.replace("\\", "/")
 
         all_files = glob.glob(os.path.join(data_dir, "*.csv"))
-        file_path = os.path.join(os.getcwd(), "Data", file_name)
+        print(all_files)
 
-        with open(
-            os.path.join(file_path), "a", newline="", encoding="utf-8"
-        ) as fout:
+        with open(os.path.join(file_path), "a", newline="", encoding="utf-8") as fout:
             writer = csv.writer(fout)
             header_saved = False
             for filename in all_files:
@@ -217,3 +231,5 @@ class TikTokCrawler:
                         header_saved = True
                     for row in reader:
                         writer.writerow(row)
+
+        hl.remove_duplicate_rows(file_path)

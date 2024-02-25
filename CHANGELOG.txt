@@ -35,3 +35,7 @@
 
 [Version 0.0.27] - 2024-02-12
 - Added: Documentation for structuring query object
+
+[Version 0.0.28] - 2024-02-25
+- Fix: Fixed bug causing the photo posts to be returned in the query results.
+- Fix: Merged data will no longer contain duplicates.

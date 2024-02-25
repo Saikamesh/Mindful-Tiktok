@@ -5,6 +5,10 @@ import csv
 def check_date_range(start_date: str, end_date: str) -> bool:
     """
     Returns True if the date range is valid.
+
+    Args:
+        start_date (str): The start date of the search.
+        end_date (str): The end date of the search.
     """
     start_datetime = datetime.datetime.strptime(start_date, "%Y%m%d")
     end_datetime = datetime.datetime.strptime(end_date, "%Y%m%d")
@@ -18,7 +22,12 @@ def check_date_range(start_date: str, end_date: str) -> bool:
 
 def generate_request_query(query: dict, start_date: str, end_date: str) -> dict:
     """
-    Returns a dictionary of the request query.
+    Returns a request query object.
+
+    Args:
+        query (dict): The search query.
+        start_date (str): The start date of the search.
+        end_date (str): The end date of the search.
     """
     request_query = {
         "query": query.get("query"),
@@ -85,6 +94,9 @@ def process_data(
             data["music_id"] = "'" + str(data["music_id"]) + "'"
             data["search_key"] = search_key
             data["queried_date"] = queried_date
+            data["create_time"] = datetime.datetime.utcfromtimestamp(
+                data["create_time"]
+            ).strftime("%Y-%m-%d %H:%M:%S")
 
         with open(file_path, "a", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=fields)
