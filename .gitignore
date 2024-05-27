@@ -3,4 +3,11 @@ build
 Data
 tt_crawl.egg-info
 __pycache__
+
+# Editor specific folders
 .vscode
+.idea
+
+# Files used for testing the package
+test.py
+TikTok_API.rest
