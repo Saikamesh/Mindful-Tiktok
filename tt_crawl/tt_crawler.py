@@ -8,23 +8,15 @@ import re
 from typing import Union
 from . import utils as ut
 from . import helper as hl
+from .auth import TikTokAuth
 
 
 class TikTokCrawler:
-    OAUTH_URL = "https://open.tiktokapis.com/v2/oauth/token/"
     API_URL = "https://open.tiktokapis.com/v2/research/video/query/"
-
-    _client_key: str = ""
-
-    _client_secret: str = ""
-
-    _grant_type: str = ""
 
     _auth_token: str = ""
 
     FIELDS = "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
-
-    OAUTH_HEADERS = {"Content-Type": "application/x-www-form-urlencoded"}
 
     def __init__(self, client_key: str, client_secret: str, grant_type: str) -> None:
         """Initialize the TikTokCrawler with the necessary authentication parameters.
@@ -34,43 +26,15 @@ class TikTokCrawler:
             client_secret (str): The client secret for the TikTok API.
             grant_type (str): The grant type for the TikTok API.
         """
-        self._client_key = client_key
-        self._client_secret = client_secret
-        self._grant_type = grant_type
-        self._auth_token = self._generate_auth_token(
-            self._client_key, self._client_secret, self._grant_type
-        )
-        # if not self._auth_token:
-        #     print(self._auth_token)
+        if not client_key or not client_secret or not grant_type:
+            
+            raise TypeError(
+                "missing 1 or more required parameters. \nRequired: 'client_key', 'client_secret', 'grant_type'"
+            )
 
-    def _generate_auth_token(self, client_key, client_secret, grant_type) -> str:
-        """
-        Generate the auth token to interact with TikTok API.
-
-        Args:
-            client_key (str): The client key for the TikTok API.
-            client_secret (str): The client secret for the TikTok API.
-            grant_type (str): The grant type for the TikTok API.
-        """
-        response = requests.post(
-            self.OAUTH_URL,
-            headers=self.OAUTH_HEADERS,
-            data={
-                "client_key": client_key,
-                "client_secret": client_secret,
-                "grant_type": grant_type,
-            },
+        self._auth_token = TikTokAuth().auth_research_api(
+            client_key, client_secret, grant_type
         )
-        if response.status_code == 200 and "error" in response.json():
-            err = {
-                "error": response.json()["error"],
-                "error_description": response.json()["error_description"],
-                # "log_id": response.json()['log_id']
-            }
-            return err
-        else:
-            auth_token = response.json()["access_token"]
-            return auth_token
 
     def _process_request(
         self, request: dict, search_key: str, queried_date: str
@@ -100,9 +64,7 @@ class TikTokCrawler:
                 "description": response.json()["error"]["message"],
                 # 'log_id':response.json()['error']['log_id']
             }
-            print(err)
-            print(response.status_code)
-            return err
+            raise RuntimeError(err)
         else:
             response_json = response.json()
             res_json = hl.validate_urls(response_json)
@@ -147,7 +109,7 @@ class TikTokCrawler:
                 response_list.append(response_json)
             return response_list
         else:
-            req = ut.generate_request_query(query, start_date, end_date) 
+            req = ut.generate_request_query(query, start_date, end_date)
             response_json = self._process_request(req, search_key, queried_date)
             return response_json
 
@@ -204,7 +166,6 @@ class TikTokCrawler:
             Note: If the file_name already exists, the data is appended to the existing file.
             It is recommended to use a new file name everytime you want to create a new mergefile.
         """
-        # file_name = (f"video_list_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv" )
 
         if not file_name:
             file_name = "video_list.csv"
