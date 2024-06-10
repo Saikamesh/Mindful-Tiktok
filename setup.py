@@ -11,7 +11,7 @@ classifiers = [
 
 setup(
     name="tt_crawl",
-    version="0.0.28",
+    version="0.0.29",
     description="A Python package for interacting with TikTok Research API",
     long_description=open("README.md").read() + "\n\n" + open("CHANGELOG.txt").read(),
     long_description_content_type="text/markdown",

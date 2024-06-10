@@ -39,3 +39,8 @@
 [Version 0.0.28] - 2024-02-25
 - Fix: Fixed bug causing the photo posts to be returned in the query results.
 - Fix: Merged data will no longer contain duplicates.
+
+[Version 0.0.29] - 2024-06-09
+- Seperating authentication code from the main code.
+- Added: Support for querying data by keyword or hashtag.
+- Improved error handling.
